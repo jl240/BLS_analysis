@@ -226,7 +226,7 @@ with tab4:
                 """,
                 unsafe_allow_html=True)
 
-    range3 = st.slider('Select a range for estimated total employment', 
+    range3 = st.slider('', 
                       df2['Estimated Total Employment'].min(), 
                       df2['Estimated Total Employment'].max(), 
                       value=(df2['Estimated Total Employment'].min(), df2['Estimated Total Employment'].max()))
