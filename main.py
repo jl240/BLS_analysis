@@ -48,7 +48,7 @@ with st.sidebar:
                 - The data has been filtered to look at SOC-detailed-level occupations across all of the United States.
                 - **Occupation titles** use Standard Occupational Classification (SOC) titles or OEWS-specific titles.
                 - **Estimated total employment** rounded to the nearest 10 (excludes self-employed).
-                - An **annual wage** greater than $239,220 is just shown as 239,220.
+                - An **median annual wage** greater than $239,220 is just shown as 239,220.
                 - An **hourly wage** greater than $115 is just shown as 115.
                 """)
 
