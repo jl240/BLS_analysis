@@ -3,6 +3,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from matplotlib.ticker import MaxNLocator
 
 df0 = pd.read_excel('all_data_M_2024.xlsx', sheet_name='filtered')
 
@@ -198,6 +199,42 @@ with tab3:
     display = styled_df
 
     st.dataframe(display, use_container_width=True)
+
+    df = testdf.reset_index(drop=True).T.iloc[0:8].T
+
+    col1, col2, col3 = st.columns([1, 2.5, 1])
+
+    with col2:
+        categories = df.index
+        medians = df['Median Annual Wage']
+        lower = medians - df['25th Percentile Annual Wage']
+        upper = df['75th Percentile Annual Wage'] - medians
+        # Create Matplotlib figure
+        fig, ax = plt.subplots()
+        # Median with IQR (25th to 75th)
+        x_labels = df['Occupation']        # Use this for tick labels
+        x_pos = range(len(df))       # Positions to plot
+
+        ax.errorbar(x_pos, medians, yerr=[lower, upper], fmt='o', capsize=5,
+                    label='Median ± IQR', color='tab:blue')
+        # Optional: Add lighter bars for 10th to 90th
+        low_range = medians - df['10th Percentile Annual Wage']
+        high_range = df['90th Percentile Annual Wage'] - medians
+        ax.errorbar(x_pos, medians, yerr=[low_range, high_range], fmt='o', capsize=5,
+                    color='tab:blue', alpha=0.3, label='Median ± (10th–90th)')
+        # Labels and legend
+        ax.set_title("Quantile Summary")
+        ax.set_ylabel("Wage")
+        ax.set_xticks(x_pos)
+        ax.set_xticklabels(x_labels, rotation=90)
+        # ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        
+
+        means = df['Mean Annual Wage']
+        ax.scatter(categories, means, marker='D', color='orange', label='Mean')
+        ax.legend()
+
+        st.pyplot(fig)
 
 
 with tab4:
