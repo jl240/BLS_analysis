@@ -39,7 +39,7 @@ df2 = df2.sort_values('Occupation')
 
 st.set_page_config(layout="wide")
 st.title('U.S. Bureau of Labor Statistics 2024 Data')
-tab1, tab2, tab3, tab4 = st.tabs(['Table', 'Summary', 'Search', 'Filter'])
+tab1, tab2, tab3, tab4 = st.tabs(['Table', 'Summary', 'Search & Compare', 'Filter'])
 
 with st.sidebar:
     st.title('Notes About the Data')
@@ -120,35 +120,84 @@ with tab2:
     
 
 with tab3:
+    n = st.slider('Select the number of occupations to compare', min_value=1, max_value=10)
+
     options = df2['Occupation']
 
-    option = st.selectbox("Select an occupation", options)
+    result = []
 
-    display_df0 = df[df['Occupation'] == option]
+    if n > 0:
+        option0 = st.selectbox("Select an occupation", options, key=0)
+        job0 = df[df['Occupation'] == option0].squeeze()
+        result.append(job0)
+    if n > 1:
+        option1 = st.selectbox("Select an occupation", options, key=1)
+        job1 = df[df['Occupation'] == option1].squeeze()
+        result.append(job1)
+    if n > 2:
+        option2 = st.selectbox("Select an occupation", options, key=2)
+        job2 = df[df['Occupation'] == option2].squeeze()
+        result.append(job2)
+    if n > 3:
+        option3 = st.selectbox("Select an occupation", options, key=3)
+        job3 = df[df['Occupation'] == option3].squeeze()
+        result.append(job3)
+    if n > 4:
+        option4 = st.selectbox("Select an occupation", options, key=4)
+        job4 = df[df['Occupation'] == option4].squeeze()
+        result.append(job4)
+    if n > 5:
+        option5 = st.selectbox("Select an occupation", options, key=5)
+        job5 = df[df['Occupation'] == option5].squeeze()
+        result.append(job5)
 
-    display_df = pd.DataFrame(np.nan, index=range(6), columns=['Statistic', 'Annual Wage', 'Hourly Wage'])
-    display_df.loc[0, 'Statistic'] = 'Mean'
-    display_df.loc[1, 'Statistic'] = '10th Percentile'
-    display_df.loc[2, 'Statistic'] = '25th Percentile'
-    display_df.loc[3, 'Statistic'] = 'Median'
-    display_df.loc[4, 'Statistic'] = '75th Percentile'
-    display_df.loc[5, 'Statistic'] = '90th Percentile'
-    display_df.loc[0, 'Annual Wage'] = display_df0['Mean Annual Wage'].iloc[0]
-    display_df.loc[1, 'Annual Wage'] = display_df0['10th Percentile Annual Wage'].iloc[0]
-    display_df.loc[2, 'Annual Wage'] = display_df0['25th Percentile Annual Wage'].iloc[0]
-    display_df.loc[3, 'Annual Wage'] = display_df0['Median Annual Wage'].iloc[0]
-    display_df.loc[4, 'Annual Wage'] = display_df0['75th Percentile Annual Wage'].iloc[0]
-    display_df.loc[5, 'Annual Wage'] = display_df0['90th Percentile Annual Wage'].iloc[0]
-    display_df.loc[0, 'Hourly Wage'] = display_df0['Mean Hourly Wage'].iloc[0]
-    display_df.loc[1, 'Hourly Wage'] = display_df0['10th Percentile Hourly Wage'].iloc[0]
-    display_df.loc[2, 'Hourly Wage'] = display_df0['25th Percentile Hourly Wage'].iloc[0]
-    display_df.loc[3, 'Hourly Wage'] = display_df0['Median Hourly Wage'].iloc[0]
-    display_df.loc[4, 'Hourly Wage'] = display_df0['75th Percentile Hourly Wage'].iloc[0]
-    display_df.loc[5, 'Hourly Wage'] = display_df0['90th Percentile Hourly Wage'].iloc[0]
+    if n > 6:
+        option6 = st.selectbox("Select an occupation", options, key=6)
+        job6 = df[df['Occupation'] == option6].squeeze()
+        result.append(job6)
 
-    st.write(f'Estimated Total Employment: {display_df0['Estimated Total Employment'].iloc[0]:,}')
+    if n > 7:
+        option7 = st.selectbox("Select an occupation", options, key=7)
+        job7 = df[df['Occupation'] == option7].squeeze()
+        result.append(job7)
 
-    st.dataframe(display_df)
+    if n > 8:
+        option8 = st.selectbox("Select an occupation", options, key=8)
+        job8 = df[df['Occupation'] == option8].squeeze()
+        result.append(job8)
+
+    if n > 9:
+        option9 = st.selectbox("Select an occupation", options, key=9)
+        job9 = df[df['Occupation'] == option9].squeeze()
+        result.append(job9)
+
+    testdf = pd.DataFrame(result)
+
+    display = testdf.reset_index(drop=True).T.iloc[0:8]
+
+    def try_convert_to_float(x):
+        try:
+            return float(x)
+        except (ValueError, TypeError):
+            return x
+
+    # Example usage
+    display = display.applymap(try_convert_to_float)
+
+    # Create a Styler that formats floats with commas and no decimals
+    styled_df = display.style.format(
+        lambda x: f"{int(x):,}" if isinstance(x, float) and x.is_integer() else x,
+        na_rep="",  # Optional: control how NaNs are displayed
+    ).set_properties(**{'text-align': 'right'})
+
+    # Center-align column headers (optional)
+    styled_df = styled_df.set_table_styles(
+        [{'selector': 'th', 'props': [('text-align', 'center')]}]
+    )
+
+    display = styled_df
+
+    st.dataframe(display, use_container_width=True)
 
 
 with tab4:
